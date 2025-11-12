@@ -1,0 +1,13 @@
+{
+  "name": "lms-root",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "client:install": "npm --prefix client install",
+    "client:dev": "npm --prefix client run dev",
+    "dev": "npm run client:dev"
+  },
+  "dependencies": {
+    "firebase": "^12.5.0"
+  }
+}
