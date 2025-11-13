@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -9,6 +9,7 @@ export default function Register() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [role, setRole] = useState(null)
   const navigate = useNavigate()
   const { signup } = useAuth()
 
@@ -30,10 +31,11 @@ export default function Register() {
 
     setLoading(true)
     try {
-      await signup(email, password)
-      navigate('/')
+      await signup(email, password, role)
+      if (role === 'caretaker') navigate('/dashboard')
+      else navigate('/student')
     } catch (err) {
-      const msg = err?.code ? `${err.code}: ${err.message}` : err.message
+      const msg = err?.message || String(err)
       setError(msg)
     } finally {
       setLoading(false)
@@ -53,62 +55,86 @@ export default function Register() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="form-floating mb-3">
-              <input
-                id="regEmail"
-                type="email"
-                className="form-control"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <label htmlFor="regEmail">Email address</label>
-            </div>
-
-            <div className="mb-3 position-relative">
-              <div className="form-floating">
-                <input
-                  id="regPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  className="form-control"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <label htmlFor="regPassword">Password</label>
+          {role === null ? (
+            <div>
+              <div className="mb-3">
+                <label className="form-label">I am a</label>
+                <div className="d-flex gap-2">
+                  <button type="button" className="btn btn-outline-primary flex-fill" onClick={() => setRole('student')}>
+                    Student
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary flex-fill" onClick={() => setRole('caretaker')}>
+                    Caretaker (staff)
+                  </button>
+                </div>
               </div>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary position-absolute"
-                style={{ right: 10, top: 8 }}
-                onClick={() => setShowPassword((s) => !s)}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
+              <div className="text-muted small">Choose the role that best describes you to continue.</div>
             </div>
+          ) : (
+            <>
+              <div className="mb-3">
+                <strong>Selected role:</strong> <span className="badge bg-info text-dark ms-2">{role}</span>
+                <button type="button" className="btn btn-link btn-sm ms-3" onClick={() => setRole(null)}>Change</button>
+              </div>
 
-            <div className="form-floating mb-3">
-              <input
-                id="regConfirm"
-                type={showPassword ? 'text' : 'password'}
-                className="form-control"
-                placeholder="Confirm Password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                required
-              />
-              <label htmlFor="regConfirm">Confirm password</label>
-            </div>
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="form-floating mb-3">
+                  <input
+                    id="regEmail"
+                    type="email"
+                    className="form-control"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <label htmlFor="regEmail">Email address</label>
+                </div>
 
-            <div className="d-grid mb-2">
-              <button className="btn btn-success" type="submit" disabled={loading}>
-                {loading ? <span className="spinner-border spinner-border-sm" /> : 'Create account'}
-              </button>
-            </div>
-          </form>
+                <div className="mb-3 position-relative">
+                  <div className="form-floating">
+                    <input
+                      id="regPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      className="form-control"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="regPassword">Password</label>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary position-absolute"
+                    style={{ right: 10, top: 8 }}
+                    onClick={() => setShowPassword((s) => !s)}
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+
+                <div className="form-floating mb-3">
+                  <input
+                    id="regConfirm"
+                    type={showPassword ? 'text' : 'password'}
+                    className="form-control"
+                    placeholder="Confirm Password"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    required
+                  />
+                  <label htmlFor="regConfirm">Confirm password</label>
+                </div>
+
+                <div className="d-grid mb-2">
+                  <button className="btn btn-success" type="submit" disabled={loading}>
+                    {loading ? <span className="spinner-border spinner-border-sm" /> : 'Create account'}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
 
           <div className="small text-center">
             Already have an account? <Link to="/login">Sign in</Link>

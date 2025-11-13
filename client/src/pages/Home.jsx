@@ -25,7 +25,7 @@ export default function Home() {
                 <p>Welcome, <strong>{currentUser.email}</strong></p>
                 <p>Role: <strong>{currentUser.profile?.role ?? 'student'}</strong></p>
                 <button className="btn btn-danger btn-sm" onClick={handleLogout}>Sign out</button>
-                <p className="mt-2">Go to <Link to="/dashboard">Dashboard</Link></p>
+                <p className="mt-2">Go to <Link to={currentUser.profile?.role === 'caretaker' ? '/dashboard' : '/student'}>Dashboard</Link></p>
               </div>
             ) : (
               <div>

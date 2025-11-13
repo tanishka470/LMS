@@ -28,7 +28,12 @@ export default function NavBar() {
             {currentUser ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/dashboard">Dashboard</Link>
+                  <Link
+                    className="nav-link"
+                    to={currentUser?.profile?.role === 'caretaker' ? '/dashboard' : '/student'}
+                  >
+                    Dashboard
+                  </Link>
                 </li>
                 <li className="nav-item">
                   <button className="btn btn-sm btn-light ms-2" onClick={handleLogout}>Sign out</button>
