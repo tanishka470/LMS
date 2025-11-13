@@ -5,7 +5,6 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import NavBar from './components/NavBar'
-import DebugPanel from './components/DebugPanel'
 import './App.css'
 
 function PrivateRoute({ children }) {
@@ -35,7 +34,6 @@ function App() {
               }
             />
           </Routes>
-          <DebugPanel />
         </div>
       </BrowserRouter>
     </AuthProvider>
